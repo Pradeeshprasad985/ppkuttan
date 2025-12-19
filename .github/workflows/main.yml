@@ -1,0 +1,26 @@
+name: Two Jobs with If Condition
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build step
+        run: |
+          echo "Building application..."
+          exit 0   # simulate success
+
+  deploy:
+    needs: build
+    if: needs.build.result == 'success' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy step
+        run: echo "Deploying application to production"
