@@ -1,26 +1,22 @@
-name: Two Jobs with If Condition
+name: Run Second Job Even If First Fails
 
-on:
-  push:
-    branches:
-      - main
-      - dev
+on: push
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Build step
+      - name: Failing build step
         run: |
-          echo "Building application..."
-          exit 0   # simulate success
+          echo "Build failed intentionally"
+          exit 1   # force failure
 
   deploy:
     needs: build
-    if: needs.build.result == 'success' && github.ref == 'refs/heads/main'
+    if: always()
     runs-on: ubuntu-latest
 
     steps:
       - name: Deploy step
-        run: echo "Deploying application to production"
+        run: echo "Deploy job runs even though build failed"
